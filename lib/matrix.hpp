@@ -13,5 +13,6 @@ class Matrix {
         Matrix(unsigned int rows, unsigned int columns, Fill fill);
         Matrix(unsigned int rows, unsigned int columns) : Matrix(rows, columns, Fill::zero){};
         void multiply(Matrix&);
+        void add(Matrix&);
         void display();
 };

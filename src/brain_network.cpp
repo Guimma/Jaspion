@@ -39,8 +39,10 @@ void BrainNetwork::feed_foward(Matrix input){
     // INPUT TO HIDDEN
     input.display();
     weight_ih.display();
-    input.multiply(weight_ih);
-    input.display();
+    Matrix hidden = input;
+    hidden.multiply(weight_ih);
+    hidden.add(bias_ih);
+    hidden.display();
     // for (int i = 0; i < bias_ih.size(); i++) {
     //     hidden.push_back(bias_ih.at(i));
     // }

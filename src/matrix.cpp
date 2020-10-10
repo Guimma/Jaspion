@@ -1,5 +1,6 @@
 #include <random>
 #include <iostream>
+#include <tgmath.h>
 #include "../lib/matrix.hpp"
 
 std::default_random_engine rng;
@@ -42,6 +43,14 @@ Matrix::Matrix(unsigned int rows, unsigned int columns, Fill fill) {
     }
 }
 
+void Matrix::add(Matrix &other) {
+    auto result = Matrix(matrix.size(), matrix.at(0).size());
+    for (int i = 0; i < matrix.size(); i++)
+        for (int j = 0; j < matrix.at(0).size(); j++)
+            result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+    matrix = result.matrix;
+}
+
 void Matrix::multiply(Matrix &other) {
     auto result = Matrix(matrix.size(), other.matrix.at(0).size());
     for (int i = 0; i < matrix.size(); i++)
@@ -51,8 +60,14 @@ void Matrix::multiply(Matrix &other) {
     matrix = result.matrix;
 }
 
+// void Matrix::sigmoid(double x) {
+//     auto result = Matrix(matrix.size(), other.matrix.at(0).size());
+//     1 / (1 + exp(-x))
+//     matrix = result.matrix;
+// }
+
 void Matrix::display() {
-    cout << "MATRIZ (" << matrix.size() << "," << matrix.at(0).size() << ":" << endl;
+    cout << "MATRIZ: " << endl;
     for (auto &rows : matrix) {
         for (double &value : rows)
             cout << " | " << value;
