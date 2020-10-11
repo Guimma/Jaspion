@@ -9,12 +9,17 @@ std::uniform_real_distribution<double> dist(-1,1);
 using std::cout;
 using std::cin;
 using std::endl;
+using std::tuple;
 
 Matrix::Matrix() {
     matrix = vector<vector<double>>();
 }   
 
-Matrix::Matrix(unsigned int rows, unsigned int columns, Fill fill) {
+Matrix::Matrix(vector<vector<double>> data) {
+    matrix = data;
+}
+
+Matrix::Matrix(uint rows, uint columns, Fill fill) {
     switch (fill) {
         case random:
             for (int i = 0; i < rows; i++) {
@@ -43,28 +48,71 @@ Matrix::Matrix(unsigned int rows, unsigned int columns, Fill fill) {
     }
 }
 
+vector<vector<double>> Matrix::get(){
+    return matrix;
+}
+
 void Matrix::add(Matrix &other) {
-    auto result = Matrix(matrix.size(), matrix.at(0).size());
-    for (int i = 0; i < matrix.size(); i++)
-        for (int j = 0; j < matrix.at(0).size(); j++)
-            result.matrix[i][j] = matrix[i][j] + other.matrix[i][j];
-    matrix = result.matrix;
+    for (int i = 0; i < this->rows(); i++)
+        for (int j = 0; j < this->cols(); j++)
+            matrix[i][j] = matrix[i][j] + other.matrix[i][j];
+}
+
+void Matrix::subtract(Matrix &other) {
+    for (int i = 0; i < this->rows(); i++)
+        for (int j = 0; j < this->cols(); j++)
+            matrix[i][j] = matrix[i][j] - other.matrix[i][j];
+}
+
+void Matrix::hadamarp(Matrix &other) {
+    for (int i = 0; i < this->rows(); i++)
+        for (int j = 0; j < this->cols(); j++)
+            matrix[i][j] = matrix[i][j] * other.matrix[i][j];
 }
 
 void Matrix::multiply(Matrix &other) {
-    auto result = Matrix(matrix.size(), other.matrix.at(0).size());
-    for (int i = 0; i < matrix.size(); i++)
-        for (int j = 0; j < other.matrix.at(0).size(); j++)
-            for (int k = 0; k < matrix.at(0).size(); k++)
+    auto result = Matrix(this->rows(), other.cols());
+    for (int i = 0; i < this->rows(); i++)
+        for (int j = 0; j < other.cols(); j++)
+            for (int k = 0; k < this->cols(); k++)
                 result.matrix[i][j] += matrix[i][k] * other.matrix[k][j];
     matrix = result.matrix;
 }
 
-// void Matrix::sigmoid(double x) {
-//     auto result = Matrix(matrix.size(), other.matrix.at(0).size());
-//     1 / (1 + exp(-x))
-//     matrix = result.matrix;
-// }
+void Matrix::escalar_multiply(uint escalar) {
+    for (int i = 0; i < this->rows(); i++)
+        for (int j = 0; j < this->cols(); j++)
+            matrix[i][j] *= escalar;
+}
+
+void Matrix::sigmoid() {
+    for (int i = 0; i < this->rows(); i++)
+        for (int j = 0; j < this->cols(); j++)
+            matrix[i][j] = 1.0 / (1.0 + exp(-matrix[i][j]));
+}
+
+void Matrix::d_sigmoid() {
+    for (int i = 0; i < this->rows(); i++)
+        for (int j = 0; j < this->cols(); j++)
+            matrix[i][j] = matrix[i][j] * (1 - matrix[i][j]);
+}
+
+void Matrix::transpose() {
+    auto result = Matrix(this->cols(), this->rows());
+    for (int i = 0; i < result.rows(); i++)
+        for (int j = 0; j < result.cols(); j++)
+            result.matrix[i][j] = matrix[j][i];
+    matrix = result.matrix;
+}
+
+uint Matrix::cols() {
+    return this->matrix.at(0).size();
+}
+
+uint Matrix::rows() {
+    return this->matrix.size();
+}
+
 
 void Matrix::display() {
     cout << "MATRIZ: " << endl;

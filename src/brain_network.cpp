@@ -1,26 +1,15 @@
 #include <iostream>
 #include <vector>
 #include <random>
-#include "../lib/matrix.hpp"
+#include "../lib/brain_network.hpp"
 
 using std::cout;
 using std::endl;
-using Vector = std::vector<double>;
-
-class BrainNetwork {
-    public:
-        int i_nodes;
-        int h_nodes;
-        int o_nodes;
-        Matrix bias_ih;
-        Matrix bias_ho;
-        Matrix weight_ih;
-        Matrix weight_ho;
-        BrainNetwork(int, int, int);
-        void feed_foward(Matrix);
-};
 
 BrainNetwork::BrainNetwork(int input_nodes, int hidden_nodes, int output_nodes) {
+    // SETTING LEARNING RATE
+    learning_rate = 0.1;
+
     // SETTING QUANTITY OF NODES
     i_nodes = input_nodes;
     h_nodes = hidden_nodes;
@@ -31,32 +20,77 @@ BrainNetwork::BrainNetwork(int input_nodes, int hidden_nodes, int output_nodes) 
     bias_ho = Matrix(o_nodes, 1, Fill::random);
 
     // SETTING WEIGHTS
-    weight_ih = Matrix(hidden_nodes, input_nodes, Fill::random);
-    weight_ho = Matrix(output_nodes, hidden_nodes, Fill::random);
+    weights_ih = Matrix(h_nodes, i_nodes, Fill::random);
+    weights_ho = Matrix(o_nodes, h_nodes, Fill::random);
 }
 
-void BrainNetwork::feed_foward(Matrix input){
+void BrainNetwork::train(Matrix input, Matrix expected){
     // INPUT TO HIDDEN
-    input.display();
-    weight_ih.display();
-    Matrix hidden = input;
-    hidden.multiply(weight_ih);
+    Matrix hidden = weights_ih;
+    hidden.multiply(input);
     hidden.add(bias_ih);
-    hidden.display();
-    // for (int i = 0; i < bias_ih.size(); i++) {
-    //     hidden.push_back(bias_ih.at(i));
-    // }
-    // hidden = sigmoid()
+    hidden.sigmoid();
 
     // HIDDEN TO OUTPUT
-    
+    Matrix output = weights_ho;
+    output.multiply(hidden);
+    output.add(bias_ho);
+    output.sigmoid();
 
+    // BACKPROPAGATION
+
+    // OUTPUT TO HIDDEN
+    Matrix output_error = expected;
+    output_error.subtract(output);
+    Matrix d_output = output;
+    d_output.d_sigmoid();
+    Matrix hidden_T = hidden;
+    hidden_T.transpose();
+
+    Matrix gradient = output_error;
+    gradient.hadamarp(d_output);
+    gradient.escalar_multiply(learning_rate);
+
+    bias_ho.add(gradient);
+    
+    Matrix weights_ho_deltas = gradient;
+    weights_ho_deltas.multiply(hidden_T);
+    weights_ho.add(weights_ho_deltas);
+
+    // HIDDEN TO INPUT
+    Matrix weights_ho_T = weights_ho;
+    weights_ho_T.transpose();
+    Matrix hidden_error = weights_ho_T;
+    hidden_error.multiply(output_error);
+    Matrix d_hidden = hidden;
+    d_hidden.d_sigmoid();
+    Matrix input_T = input;
+    input_T.transpose();
+
+    Matrix gradient_H = hidden_error;
+    gradient_H.hadamarp(d_hidden);
+    gradient_H.escalar_multiply(learning_rate);
+
+    bias_ih.add(gradient_H);
+
+    Matrix weights_ih_deltas = gradient_H;
+    weights_ih_deltas.multiply(input_T);
+
+    weights_ih.add(weights_ih_deltas);
 }
 
-int main(){
-    BrainNetwork b = BrainNetwork(3,1,3);
-    Matrix input = Matrix(2, 1, Fill::input_values);
-    b.feed_foward(input);
-    
-    return 0;
+Matrix BrainNetwork::predict(Matrix input) {
+    // INPUT TO HIDDEN
+    Matrix hidden = weights_ih;
+    hidden.multiply(input);
+    hidden.add(bias_ih);
+    hidden.sigmoid();
+
+    // HIDDEN TO OUTPUT
+    Matrix output = weights_ho;
+    output.multiply(hidden);
+    output.add(bias_ho);
+    output.sigmoid();
+
+    return output;
 }

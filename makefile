@@ -5,10 +5,10 @@ SOURCE_PATH = src/
 BUILD_PATH = build/
 OBJ_SUFIX = .o
 
-NAME = brain_network
+NAME = jaspion
 TARGET = $(BUILD_PATH)$(NAME)
 
-SRC = brain_network matrix
+SRC = jaspion brain_network matrix
 _SRC = $(addprefix $(BUILD_PATH), $(addsuffix $(OBJ_SUFIX), $(SRC)))
 
 all: $(_SRC)
@@ -21,3 +21,6 @@ $(BUILD_PATH)%.o: $(SOURCE_PATH)%.cpp
 clean:
 	@echo "Cleaning up..."
 	rm build/*.o
+
+run: 
+	./build/jaspion.exe

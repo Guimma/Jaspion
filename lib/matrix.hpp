@@ -2,6 +2,8 @@
 
 using std::vector;
 
+using uint = unsigned int;
+
 enum Fill { random, input_values, zero };
 
 class Matrix {
@@ -10,9 +12,19 @@ class Matrix {
     
     public:
         Matrix();
-        Matrix(unsigned int rows, unsigned int columns, Fill fill);
-        Matrix(unsigned int rows, unsigned int columns) : Matrix(rows, columns, Fill::zero){};
+        Matrix(vector<vector<double>>);
+        Matrix(uint rows, uint columns, Fill fill);
+        Matrix(uint rows, uint columns) : Matrix(rows, columns, Fill::zero){};
+        vector<vector<double>> get();
         void multiply(Matrix&);
+        void escalar_multiply(uint);
         void add(Matrix&);
+        void subtract(Matrix&);
+        void hadamarp(Matrix&);
+        void sigmoid();
+        void d_sigmoid();
+        void transpose();
         void display();
+        uint cols();
+        uint rows();
 };
