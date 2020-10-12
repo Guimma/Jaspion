@@ -16,12 +16,12 @@ BrainNetwork::BrainNetwork(int input_nodes, int hidden_nodes, int output_nodes) 
     o_nodes = output_nodes;
 
     // SETTING BIAS
-    bias_ih = Matrix(h_nodes, 1, Fill::random);
-    bias_ho = Matrix(o_nodes, 1, Fill::random);
+    bias_ih = Matrix(h_nodes, 1, Fill::random_values);
+    bias_ho = Matrix(o_nodes, 1, Fill::random_values);
 
     // SETTING WEIGHTS
-    weights_ih = Matrix(h_nodes, i_nodes, Fill::random);
-    weights_ho = Matrix(o_nodes, h_nodes, Fill::random);
+    weights_ih = Matrix(h_nodes, i_nodes, Fill::random_values);
+    weights_ho = Matrix(o_nodes, h_nodes, Fill::random_values);
 }
 
 void BrainNetwork::train(Matrix input, Matrix expected){

@@ -1,4 +1,4 @@
-CFLAGS = -O2 -w
+CFLAGS =  -w -fopenmp
 CC = g++
 
 SOURCE_PATH = src/
@@ -22,5 +22,5 @@ clean:
 	@echo "Cleaning up..."
 	rm build/*.o
 
-run: 
+run:
 	./build/jaspion.exe

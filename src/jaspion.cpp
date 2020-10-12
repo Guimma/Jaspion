@@ -1,7 +1,7 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
-#include <chrono> 
+#include <chrono>
 #include "../lib/brain_network.hpp"
 
 using std::vector;
@@ -89,7 +89,7 @@ int main(){
                 b.train(input[e], output[e]);
             }
             train_count++;
-            
+
             // BREAK POINT
             auto result1 = b.predict(input[0]).get().at(0).at(0);
             auto result2 = b.predict(input[1]).get().at(0).at(0);
@@ -104,8 +104,8 @@ int main(){
     else {
         return 0;
     }
-    
-    
+
+
     // LOG RESULTS
     cout << "--------------OPERACOES XOR--------------" << endl;
     for (int i = 0; i < 4; i++)

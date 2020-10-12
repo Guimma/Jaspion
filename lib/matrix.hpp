@@ -4,12 +4,12 @@ using std::vector;
 
 using uint = unsigned int;
 
-enum Fill { random, input_values, zero };
+enum Fill { random_values, input_values, zero };
 
 class Matrix {
     private:
         vector<vector<double>> matrix;
-    
+
     public:
         Matrix();
         Matrix(vector<vector<double>>);
