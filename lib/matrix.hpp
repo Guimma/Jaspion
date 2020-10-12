@@ -17,7 +17,7 @@ class Matrix {
         Matrix(uint rows, uint columns) : Matrix(rows, columns, Fill::zero){};
         vector<vector<double>> get();
         void multiply(Matrix&);
-        void escalar_multiply(uint);
+        void escalar_multiply(double);
         void add(Matrix&);
         void subtract(Matrix&);
         void hadamarp(Matrix&);

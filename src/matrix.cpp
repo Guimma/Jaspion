@@ -1,6 +1,8 @@
 #include <random>
 #include <iostream>
+#include <cstdlib>
 #include <tgmath.h>
+#include <chrono>
 #include "../lib/matrix.hpp"
 
 std::default_random_engine rng;
@@ -20,11 +22,12 @@ Matrix::Matrix(vector<vector<double>> data) {
 }
 
 Matrix::Matrix(uint rows, uint columns, Fill fill) {
+    rng.seed(std::chrono::system_clock::now().time_since_epoch().count());
     switch (fill) {
         case random:
             for (int i = 0; i < rows; i++) {
                 matrix.push_back(vector<double>());
-                for (int j = 0; j < columns; j++) 
+                for (int j = 0; j < columns; j++)
                     matrix.at(i).push_back(dist(rng));        
             }
             break;
@@ -79,7 +82,7 @@ void Matrix::multiply(Matrix &other) {
     matrix = result.matrix;
 }
 
-void Matrix::escalar_multiply(uint escalar) {
+void Matrix::escalar_multiply(double escalar) {
     for (int i = 0; i < this->rows(); i++)
         for (int j = 0; j < this->cols(); j++)
             matrix[i][j] *= escalar;

@@ -38,7 +38,6 @@ void BrainNetwork::train(Matrix input, Matrix expected){
     output.sigmoid();
 
     // BACKPROPAGATION
-
     // OUTPUT TO HIDDEN
     Matrix output_error = expected;
     output_error.subtract(output);
@@ -47,12 +46,13 @@ void BrainNetwork::train(Matrix input, Matrix expected){
     Matrix hidden_T = hidden;
     hidden_T.transpose();
 
-    Matrix gradient = output_error;
-    gradient.hadamarp(d_output);
+    Matrix gradient = d_output;
+    gradient.hadamarp(output_error);
     gradient.escalar_multiply(learning_rate);
 
+    // Adjust Bias O_H
     bias_ho.add(gradient);
-    
+    // Adjust Weigths O_H
     Matrix weights_ho_deltas = gradient;
     weights_ho_deltas.multiply(hidden_T);
     weights_ho.add(weights_ho_deltas);
@@ -67,15 +67,16 @@ void BrainNetwork::train(Matrix input, Matrix expected){
     Matrix input_T = input;
     input_T.transpose();
 
-    Matrix gradient_H = hidden_error;
-    gradient_H.hadamarp(d_hidden);
+    Matrix gradient_H = d_hidden;
+    gradient_H.hadamarp(hidden_error);
     gradient_H.escalar_multiply(learning_rate);
 
+    // Adjust Bias I_H
     bias_ih.add(gradient_H);
 
+    // Adjust Weigths I_H
     Matrix weights_ih_deltas = gradient_H;
     weights_ih_deltas.multiply(input_T);
-
     weights_ih.add(weights_ih_deltas);
 }
 
