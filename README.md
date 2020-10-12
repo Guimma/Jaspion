@@ -13,13 +13,14 @@
   <br>_edit makefile to run in linux_
   
 ### Time comparison:
+to 1.000.000 generations:
 <br> 15.314ms sequential
 <br> 41.776ms 2 threads
 <br> 43.732ms 4 threads
 <br> 68.301ms 8 threads
 
 ### Authors
-<br>@Guimma
+@Guimma
 <br>@SeraphyBR
 <br>@Matheussop
 <br>Based on the project: https://github.com/JBezerra/YT-Rede-Neural
