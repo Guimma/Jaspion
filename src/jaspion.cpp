@@ -1,10 +1,12 @@
 #include <iostream>
 #include <cstdlib>
 #include <vector>
+#include <chrono> 
 #include "../lib/brain_network.hpp"
 
 using std::vector;
 using std::endl;
+using std::cin;
 using std::cout;
 using raw_matrix = vector<vector<double>>;
 
@@ -60,28 +62,49 @@ int main(){
     Matrix o11 = Matrix(output_1_1);
     Matrix output[4] = {o00, o01, o10, o11};
 
-    cout << "TREINANDO A REDE NEURAL..." << endl;
-    int train_count = 0;
-    while (train)
-    {
-        for (int i = 0; i < GENERATIONS; i++)
-        {
+    char opt;
+    cout << "INSERIR NUMERO DE GERACOES MANUALMENTE? (s/n): ";
+    cin >> opt;
+
+    auto start = std::chrono::high_resolution_clock::now();
+    if (opt == 's') {
+        long num_generations = 0;
+        cout << "NUMERO DE GERACOES: ";
+        cin >> num_generations;
+        start = std::chrono::high_resolution_clock::now();
+        cout << "TREINANDO A REDE NEURAL..." << endl;
+        for (int i = 0; i < num_generations; i++) {
             int e = std::rand() % 4;
             b.train(input[e], output[e]);
         }
-        
-        train_count++;
-        
-        // BREAK POINT
-        auto result1 = b.predict(input[0]).get().at(0).at(0);
-        auto result2 = b.predict(input[1]).get().at(0).at(0);
-        if (result1 < MIN_ERROR && result2 > MAX_ERROR)
-        {
-            train = false;
-            cout << "FIM DO TREINAMENTO. (Geracoes: " << GENERATIONS * train_count << ")" << endl;
-        }
-
+        cout << "FIM DO TREINAMENTO. (Geracoes: " << num_generations << ")" << endl;
     }
+    else if(opt == 'n') {
+        start = std::chrono::high_resolution_clock::now();
+        cout << "TREINANDO A REDE NEURAL..." << endl;
+        int train_count = 0;
+        while (train) {
+            for (int i = 0; i < GENERATIONS; i++) {
+                int e = std::rand() % 4;
+                b.train(input[e], output[e]);
+            }
+            train_count++;
+            
+            // BREAK POINT
+            auto result1 = b.predict(input[0]).get().at(0).at(0);
+            auto result2 = b.predict(input[1]).get().at(0).at(0);
+            if (result1 < MIN_ERROR && result2 > MAX_ERROR)
+            {
+                train = false;
+                cout << "FIM DO TREINAMENTO. (Geracoes: " << GENERATIONS * train_count << ")" << endl;
+            }
+
+        }
+    }
+    else {
+        return 0;
+    }
+    
     
     // LOG RESULTS
     cout << "--------------OPERACOES XOR--------------" << endl;
@@ -92,7 +115,11 @@ int main(){
         input[i].display();
         cout << "ESPERADO: " << output[i].get().at(0).at(0) << endl;
         cout << "RESULTADO: " << b.predict(input[i]).get().at(0).at(0) << endl;
-    }  
+    }
+    auto stop = std::chrono::high_resolution_clock::now();
+    auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(stop - start);
+    cout << endl;
+    cout << "TEMPO DE EXECUCAO: " << duration.count() << "ms" << endl;
 
     return 0;
 }

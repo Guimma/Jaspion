@@ -75,7 +75,9 @@ void Matrix::hadamarp(Matrix &other) {
 
 void Matrix::multiply(Matrix &other) {
     auto result = Matrix(this->rows(), other.cols());
+    #pragma omp parallel for collapse(2)
     for (int i = 0; i < this->rows(); i++)
+        #pragma omp parallel for reduction(+:sum)
         for (int j = 0; j < other.cols(); j++)
             for (int k = 0; k < this->cols(); k++)
                 result.matrix[i][j] += matrix[i][k] * other.matrix[k][j];
@@ -83,6 +85,7 @@ void Matrix::multiply(Matrix &other) {
 }
 
 void Matrix::escalar_multiply(double escalar) {
+    // #pragma omp parallel for
     for (int i = 0; i < this->rows(); i++)
         for (int j = 0; j < this->cols(); j++)
             matrix[i][j] *= escalar;
@@ -97,7 +100,7 @@ void Matrix::sigmoid() {
 void Matrix::d_sigmoid() {
     for (int i = 0; i < this->rows(); i++)
         for (int j = 0; j < this->cols(); j++)
-            matrix[i][j] = matrix[i][j] * (1 - matrix[i][j]);
+            matrix[i][j] *= (1 - matrix[i][j]);
 }
 
 void Matrix::transpose() {
